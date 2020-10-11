@@ -62,8 +62,6 @@ class DB {
 
     if (res.isNotEmpty) {
       for (int i = 0; i < res.length; i++) {
-        // print(res[i]["name"]);
-
         int id = res[i]["id"];
         String name = res[i]["name"];
         String itemName = res[i]["itemName"];
@@ -86,13 +84,23 @@ class DB {
             remarks: remarks));
       }
 
-
       return khataList;
-
-
-
     } else {
       return null;
     }
   }
+
+
+  static Future<int> update(Khata khata) async {
+    await _db.update("$KHATA_TABLE", khata.toMap(), where: 'id=?', whereArgs: [khata.id]);
+  }
+
+
+  static Future<int> delete(Khata khata) async{
+    await _db.delete("$KHATA_TABLE",  where: 'id=?', whereArgs: [khata.id]);
+  }
+
+
+
+
 }

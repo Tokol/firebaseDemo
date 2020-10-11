@@ -26,6 +26,19 @@ class KhataData extends ChangeNotifier {
   }
 
 
+  void deleteKhata(Khata khata) async {
+    await DB.delete(khata);
+    notifyListeners();
+    getKhataList();
+
+  }
+
+
+  void update(Khata khata) async{
+    await DB.update(khata);
+    notifyListeners();
+    getKhataList();
+  }
 
 
 

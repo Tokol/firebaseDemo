@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'database/database.dart';
 
@@ -242,8 +243,183 @@ class _HomePageState extends State<HomePage> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: <Widget>[
 
-                                          IconButton(icon: Icon(Icons.edit),onPressed: (){},),
-                                          IconButton(icon: Icon(Icons.delete), onPressed: (){},),
+                                          IconButton(icon: Icon(Icons.edit),onPressed: (){
+
+                                            Khata _khata = snapshot.data[position];
+
+                                            showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  DateTime now = DateTime.now();
+                                                  DateFormat formatter =
+                                                  DateFormat('yyyy-MM-dd');
+                                                  _khata.date =
+                                                      (formatter.format(now)).toString();
+
+                                                  return StatefulBuilder(
+                                                    builder: (context, state) {
+                                                      return Container(
+                                                        height:
+                                                        MediaQuery.of(context).size.height -
+                                                            150,
+                                                        child: SingleChildScrollView(
+                                                          child: Column(
+                                                            children: <Widget>[
+                                                              Container(
+                                                                  margin: EdgeInsets.symmetric(
+                                                                      vertical: 15.0),
+                                                                  child: Text(
+                                                                    'Save Khata Detail',
+                                                                    style: TextStyle(
+                                                                      fontSize: 18.0,
+                                                                    ),
+                                                                  )),
+                                                              FireBaseInput(
+                                                                hintValue: _khata.name ,
+                                                                onChanged: (value) {
+                                                                  _khata.name = value;
+                                                                },
+                                                              ),
+                                                              FireBaseInput(
+                                                                hintValue:  _khata.itemName,
+                                                                onChanged: (value) {
+                                                                  _khata.itemName = value;
+                                                                },
+                                                              ),
+                                                              FireBaseInput(
+                                                                hintValue:  (_khata.rate).toString(),
+                                                                onChanged: (value) {
+                                                                  _khata.rate = value;
+                                                                },
+                                                              ),
+                                                              FireBaseInput(
+                                                                hintValue:  (_khata.quantity).toString(),
+                                                                onChanged: (value) {
+                                                                  _khata.quantity = value;
+                                                                },
+                                                              ),
+                                                              FireBaseInput(
+                                                                hintValue: _khata.contact,
+                                                                onChanged: (value) {
+                                                                  _khata.contact = value;
+                                                                },
+                                                              ),
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  DatePicker.showDatePicker(
+                                                                      context,
+                                                                      showTitleActions: true,
+                                                                      minTime:
+                                                                      DateTime(1990, 3, 5),
+                                                                      maxTime: DateTime.now(),
+                                                                      onChanged: (date) {
+                                                                        DateFormat formatter =
+                                                                        DateFormat(
+                                                                            'yyyy-MM-dd');
+                                                                        state(() {
+                                                                          _khata.date = (formatter
+                                                                              .format(date))
+                                                                              .toString();
+                                                                        });
+                                                                      }, onConfirm: (date) {
+                                                                    DateFormat formatter =
+                                                                    DateFormat(
+                                                                        'yyyy-MM-dd');
+                                                                    state(() {
+                                                                      _khata.date = (formatter
+                                                                          .format(date))
+                                                                          .toString();
+                                                                    });
+                                                                  },
+                                                                      currentTime:
+                                                                      DateTime.now(),
+                                                                      locale: LocaleType.en);
+                                                                },
+                                                                child: Container(
+                                                                    padding:
+                                                                    EdgeInsets.all(20.0),
+                                                                    margin:
+                                                                    EdgeInsets.symmetric(
+                                                                        horizontal: 10),
+                                                                    width:
+                                                                    MediaQuery.of(context)
+                                                                        .size
+                                                                        .width,
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.white,
+                                                                      borderRadius:
+                                                                      BorderRadius.circular(
+                                                                          20.0),
+                                                                      border: Border.all(
+                                                                          width: 1.0,
+                                                                          color:
+                                                                          Colors.black38),
+                                                                    ),
+                                                                    child: Text(
+                                                                      _khata.date,
+                                                                      style: TextStyle(
+                                                                          color: Colors.black,
+                                                                          fontWeight:
+                                                                          FontWeight.w600),
+                                                                    )),
+                                                              ),
+                                                              FireBaseInput(
+                                                                hintValue: 'Remark',
+                                                                onChanged: (value) {
+                                                                  _khata.remarks = value;
+                                                                },
+                                                              ),
+                                                              SizedBox(
+                                                                height: MediaQuery.of(context)
+                                                                    .viewInsets
+                                                                    .bottom ==
+                                                                    0
+                                                                    ? 10
+                                                                    : 300,
+                                                              ),
+                                                              RaisedButton(
+                                                                highlightColor:
+                                                                Colors.amberAccent,
+                                                                color: Colors.greenAccent,
+                                                                elevation: 10.0,
+                                                                child: Container(
+                                                                    padding:
+                                                                    EdgeInsets.all(20.0),
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(
+                                                                                20.0))),
+                                                                    width:
+                                                                    MediaQuery.of(context)
+                                                                        .size
+                                                                        .width /
+                                                                        2,
+                                                                    child: Text(
+                                                                      'Update',
+                                                                      textAlign:
+                                                                      TextAlign.center,
+                                                                    )),
+                                                                onPressed: () {
+                                                                  data.update(_khata);
+                                                                  Navigator.pop(context);
+                                                                },
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                });
+
+
+                                          },),
+                                          IconButton(icon: Icon(Icons.delete), onPressed: (){
+                                            data.deleteKhata(snapshot.data[position]);
+
+                                          },),
 
 
 
@@ -260,7 +436,13 @@ class _HomePageState extends State<HomePage> {
                                       Text((snapshot.data[position].remarks).toString()),
 
 
-                                      Text((snapshot.data[position].contact).toString()),
+                                      IconButton(
+                                        icon: Icon(Icons.phone, ),
+                                        onPressed: (){
+                                          launch("tel://${snapshot.data[position].contact}");
+                                        },
+                                      ),
+//
 
 
 
