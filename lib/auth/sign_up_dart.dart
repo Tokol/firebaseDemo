@@ -189,7 +189,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               });
 
               try{
-                var result =   await auth.createUserWithEmailAndPassword(email: email, password: password);
+
+                var result =   await auth.createUserWithEmailAndPassword(email: email, password: password,);
                 if(result.additionalUserInfo.isNewUser){
                   SharedPreferences  _pref = await SharedPreferences.getInstance();
                   _pref.setBool("userLogin",true);
